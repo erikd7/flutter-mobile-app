@@ -1,4 +1,4 @@
-package com.example.erik_hello_world
+package com.example.weatherlite
 
 import io.flutter.embedding.android.FlutterActivity
 
