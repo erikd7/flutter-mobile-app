@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 import 'package:weatherlite/tabs/locations.dart';
 import 'package:weatherlite/tabs/now.dart';
 import 'package:weatherlite/tabs/hourly.dart';
 import 'package:weatherlite/tabs/daily.dart';
+import 'package:weatherlite/api/apis.dart';
 
-void main() {
+Future<void> main() async {
+  await dotenv.load(fileName: "env/default.env");
+
   runApp(const MyApp());
 }
 
@@ -51,8 +56,10 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
+class _MyHomePageState extends State<MyHomePage>
+    with SingleTickerProviderStateMixin {
   late TabController controller = TabController(length: 4, vsync: this);
+  final WeatherApis apis = WeatherApis('madison,wi,usa', 'imperial');
 
   TabBar getTabBar() {
     return TabBar(
@@ -91,6 +98,8 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
         title: getTabBar(),
       ),
       body: getTabBarView(<Widget>[Locations(), Now(), Hourly(), Daily()]),
+      floatingActionButton:
+          FloatingActionButton(onPressed: () => apis.getCurrentWeather()),
     );
   }
 }
