@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:weatherlite/api/apis.dart';
+import 'package:weatherlite/components/Styled.dart';
+import 'package:weatherlite/components/Temperature.dart';
+import 'package:weatherlite/components/Daylight.dart';
 import 'package:weatherlite/models.dart';
 
 class Now extends StatefulWidget {
@@ -21,10 +24,24 @@ class _NowState extends State<Now> with SingleTickerProviderStateMixin {
       child: Center(
         child: Column(
           // center the children
-          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            NowIcon(),
-            Text("Current Weather"),
+            weatherData == null
+                ? NowIcon()
+                : FutureBuilder<Weather>(
+                    future: weatherData,
+                    builder: (context, weather) {
+                      if (weather.hasData) {
+                        return Column(children: [
+                          Styled.card(Temperature(data: weather.data)),
+                          Styled.card(Daylight(data: weather.data?.daylight)),
+                        ]);
+                      } else if (weather.hasError) {
+                        return Text(
+                            'Weather API error: ${weather.error.toString()}');
+                      } else {
+                        return const CircularProgressIndicator();
+                      }
+                    }),
             FloatingActionButton(
               onPressed: () => setState(() {
                 weatherData = widget.apis.getCurrentWeather();
@@ -32,21 +49,6 @@ class _NowState extends State<Now> with SingleTickerProviderStateMixin {
               tooltip: 'Add Location',
               child: const Icon(Icons.add),
             ),
-            weatherData == null
-                ? const Text('no weather data')
-                : FutureBuilder<Weather>(
-                    future: weatherData,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return Text(
-                            'Temp is ${snapshot.data?.temp}. Feels like ${snapshot.data?.feelsLike}.');
-                      } else if (snapshot.hasError) {
-                        return Text(
-                            'Delivery error: ${snapshot.error.toString()}');
-                      } else {
-                        return const CircularProgressIndicator();
-                      }
-                    })
           ],
         ),
       ),
