@@ -39,7 +39,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
   late TabController controller = TabController(length: 4, vsync: this);
-  final WeatherApi apis = WeatherApi('madison,wi,usa', 'imperial');
+  final WeatherApi apis = WeatherApi('boston,ma,usa', 'imperial');
 
   TabBar getTabBar() {
     return TabBar(
